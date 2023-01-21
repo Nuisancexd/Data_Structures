@@ -1,0 +1,125 @@
+#include <iostream>
+
+typedef struct tree
+{
+	int data;
+	struct tree* left; // указатель на левый дочерний узел
+	struct tree* right; // указатель на правый дочерний узел
+
+	~tree() { std::cout << "tree is deleted" << std::endl; }
+
+}tree;
+
+
+void inserth(int x, tree *root)
+{
+	if (x < root->data)
+	{
+		if (root->left)
+		{
+			inserth(x, root->left);
+		}
+		else
+		{
+			root->left = new tree;
+			root->left->data = x;
+			root->left->left = NULL;
+			root->left->right = NULL;
+		}
+	}
+	else if (x >= root->data)
+	{
+		if (root->right)
+		{
+			inserth(x, root->right);
+		}
+		else
+		{
+			root->right = new tree;
+			root->right->data = x;
+			root->right->right = NULL;
+			root->right->left = NULL;
+		}
+	}
+}
+
+void insert(int x, tree* root)
+{
+	if (root)
+	{
+		inserth(x, root);
+	}
+	else
+	{
+		root = new tree;
+		root->data = x;
+		root->left = NULL;
+		root->right = NULL;
+	}
+}
+
+int search_tree(int x, tree* t)
+{
+	if (!t) return NULL;
+	if (t->data == x) return t->data;
+	if (x < t->data)
+	{
+		return search_tree(x, t->left);
+	}
+	else
+	{
+		return search_tree(x, t->right);
+	}
+} // time O(h)
+
+
+int find_min(tree* t)
+{
+	tree* min; //указатель на наименьший элемент
+	if (t == NULL) return NULL;
+	min = t;
+	while (min->left != NULL)
+	{
+		min = min->left;
+	}
+	return min->data;
+}
+
+int find_max(tree* t)
+{
+	tree* max;
+	if (t == NULL) return NULL;
+	max = t;
+	while (max->right != NULL)
+	{
+		max = max->right;
+	}
+	return max->data;
+}
+
+//Обход дерева
+void traverse_tree(tree* t)
+{
+	if (t)
+	{
+		traverse_tree(t->left);
+		std::cout << t->data << " ~ ";
+		traverse_tree(t->right);
+	}
+}
+
+int main()
+{
+	tree* root = new tree();
+	insert(8, root);
+	insert(3, root);
+	insert(14, root);
+
+	traverse_tree(root);
+	std::cout << std::endl;
+	std::cout << search_tree(3, root) << std::endl;
+	std::cout << find_max(root) << std::endl;
+	std::cout << find_min(root) << std::endl;
+
+	delete root;
+}
